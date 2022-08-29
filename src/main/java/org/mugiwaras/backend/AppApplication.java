@@ -1,4 +1,4 @@
-package org.magm.backend;
+package org.mugiwaras.backend;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

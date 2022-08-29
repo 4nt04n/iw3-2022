@@ -1,4 +1,4 @@
-package org.magm.backend.model;
+package org.mugiwaras.backend.model;
 
 import java.io.Serializable;
 

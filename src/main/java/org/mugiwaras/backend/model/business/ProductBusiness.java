@@ -1,10 +1,10 @@
-package org.magm.backend.model.business;
+package org.mugiwaras.backend.model.business;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.magm.backend.model.Product;
-import org.magm.backend.model.persistence.ProductRepository;
+import org.mugiwaras.backend.model.Product;
+import org.mugiwaras.backend.model.persistence.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

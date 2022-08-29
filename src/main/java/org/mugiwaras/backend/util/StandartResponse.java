@@ -1,4 +1,4 @@
-package org.magm.backend.util;
+package org.mugiwaras.backend.util;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;

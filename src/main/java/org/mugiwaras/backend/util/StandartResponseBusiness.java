@@ -1,4 +1,4 @@
-package org.magm.backend.util;
+package org.mugiwaras.backend.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

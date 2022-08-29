@@ -1,4 +1,4 @@
-package org.magm.backend.model.business;
+package org.mugiwaras.backend.model.business;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;

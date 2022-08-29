@@ -1,8 +1,8 @@
-package org.magm.backend.model.business;
+package org.mugiwaras.backend.model.business;
 
 import java.util.List;
 
-import org.magm.backend.model.Product;
+import org.mugiwaras.backend.model.Product;
 
 public interface IProductBusiness {	
 	public Product load(long id) throws NotFoundException, BusinessException;

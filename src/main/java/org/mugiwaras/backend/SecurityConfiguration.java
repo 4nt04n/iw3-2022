@@ -1,4 +1,4 @@
-package org.magm.backend;
+package org.mugiwaras.backend;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

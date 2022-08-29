@@ -1,11 +1,11 @@
-package org.magm.backend.controllers;
+package org.mugiwaras.backend.controllers;
 
-import org.magm.backend.model.Product;
-import org.magm.backend.model.business.BusinessException;
-import org.magm.backend.model.business.FoundException;
-import org.magm.backend.model.business.IProductBusiness;
-import org.magm.backend.model.business.NotFoundException;
-import org.magm.backend.util.IStandartResponseBusiness;
+import org.mugiwaras.backend.model.Product;
+import org.mugiwaras.backend.model.business.BusinessException;
+import org.mugiwaras.backend.model.business.FoundException;
+import org.mugiwaras.backend.model.business.IProductBusiness;
+import org.mugiwaras.backend.model.business.NotFoundException;
+import org.mugiwaras.backend.util.IStandartResponseBusiness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
