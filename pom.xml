@@ -9,7 +9,7 @@
 		<version>2.7.3-SNAPSHOT</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>org.magm</groupId>
+	<groupId>org.mugiwaras</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>App</name>
