@@ -2,12 +2,7 @@ package org.mugiwaras.backend.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +12,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name="products")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,6 +30,6 @@ public class Product implements Serializable{
 	@Column(columnDefinition = "tinyint default 0")
 	private boolean stock = true;
 
-	private double price;
+	private double price; // precio unitario del producto
 
 }

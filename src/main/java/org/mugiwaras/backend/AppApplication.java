@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 import lombok.extern.slf4j.Slf4j;
 
+
 @SpringBootApplication
 @Slf4j
 public class AppApplication extends SpringBootServletInitializer  implements CommandLineRunner {
