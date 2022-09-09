@@ -1,5 +1,7 @@
 package org.mugiwaras.backend.integration.cli2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +13,12 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "bill_details")
+//@IdClass(BillDetailKey.class)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class  BillDetail implements Serializable {
+public class BillDetail implements Serializable {
 
 
     private static final long serialVersionUID = -2732161062909843295L;
@@ -26,12 +29,14 @@ public class  BillDetail implements Serializable {
 
     @ManyToOne
     @MapsId("idProductCli2")
-    @JoinColumn(name = "id_products")
+    @JoinColumn(name = "id_product")
+//    @JsonIgnore
     private ProductCli2 product;
 
     @ManyToOne
     @MapsId("idBill")
     @JoinColumn(name = "id_bill")
+    @JsonIgnore
     private Bill bill;
 
     private Double precio;

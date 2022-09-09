@@ -96,21 +96,21 @@ public class BillBusiness implements IBillBusiness {
 
     }
 
-    @Override
-    public BillDetail addDetail(BillDetail billDetail) throws BusinessException, NotFoundException {
-        try {
-            load(billDetail.getBill().getIdBill());
-        } catch (NotFoundException e) {
-            throw NotFoundException.builder().ex(e).build();
-        }
-        try {
-            return billDetailRepository.save(billDetail);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw BusinessException.builder().ex(e).build();
-        }
-
-    }
+//    @Override
+//    public BillDetail addDetail(BillDetail billDetail) throws BusinessException, NotFoundException {
+//        try {
+//            load(billDetail.getBill().getIdBill());
+//        } catch (NotFoundException e) {
+//            throw NotFoundException.builder().ex(e).build();
+//        }
+//        try {
+//            return billDetailRepository.save(billDetail);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//            throw BusinessException.builder().ex(e).build();
+//        }
+//
+//    }
 
     @Override
     public Bill update(Bill bill) throws NotFoundException, BusinessException {

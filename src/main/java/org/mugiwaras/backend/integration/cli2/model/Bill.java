@@ -1,14 +1,13 @@
 package org.mugiwaras.backend.integration.cli2.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,17 +28,18 @@ public class Bill implements Serializable {
     private Long number;
 
     @Column
-    private Date broadcastDate;
+    private OffsetDateTime broadcastDate;
 
     @Column
-    private Date expirationDate;
+    private OffsetDateTime expirationDate;
 
     @Column(columnDefinition = "tinyint default 0")
     private boolean canceled = false;
 
-    @OneToMany(mappedBy = "bill")
-    Set<BillDetail> detalle;
-
+//    @OneToMany(mappedBy = "bill")
+    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER)
+//            @JoinTable
+    List<BillDetail> detalle;
 
 
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface BillDetailRepository  extends JpaRepository<BillDetail, Long> {
-    Optional<BillDetail> findAllByIdBill (Long idBill);
+//    Optional<BillDetail> findAllByIdBill (Long idBill);
 }

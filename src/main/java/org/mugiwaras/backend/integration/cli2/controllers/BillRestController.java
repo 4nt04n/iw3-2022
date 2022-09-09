@@ -48,6 +48,7 @@ public class BillRestController extends BaseRestController {
     public ResponseEntity<?> add(@RequestBody Bill bill) {
         try {
             Bill response = billBusiness.add(bill);
+            //TODO: marcos ver esto!!
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getIdBill());
             return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
