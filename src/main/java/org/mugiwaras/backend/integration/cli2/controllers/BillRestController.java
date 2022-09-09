@@ -2,7 +2,10 @@ package org.mugiwaras.backend.integration.cli2.controllers;
 import org.mugiwaras.backend.controllers.BaseRestController;
 import org.mugiwaras.backend.controllers.Constants;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
+import org.mugiwaras.backend.integration.cli2.model.BillDetail;
+import org.mugiwaras.backend.integration.cli2.model.BillDetailKey;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
+import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.model.business.NotFoundException;
@@ -22,6 +25,10 @@ public class BillRestController extends BaseRestController {
 
     @Autowired
     private IBillBusiness billBusiness;
+
+    @Autowired()
+    private IBillDetailBusiness billDetailBusiness;
+
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> list() {
@@ -47,7 +54,19 @@ public class BillRestController extends BaseRestController {
     @PostMapping(value = "")
     public ResponseEntity<?> add(@RequestBody Bill bill) {
         try {
-            Bill response = billBusiness.add(bill);
+
+           Bill auxBill= new Bill();
+           auxBill.setBroadcastDate(bill.getBroadcastDate());
+           auxBill.setExpirationDate(bill.getExpirationDate());
+           auxBill.setNumber(bill.getNumber());
+            Bill response = billBusiness.add(auxBill);
+            for (BillDetail item: bill.getDetalle()
+                 ) {
+                item.setBill(response);
+            billDetailBusiness.add(item,response.getIdBill(),item.getProduct().getId());
+            }
+
+
             //TODO: marcos ver esto!!
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getIdBill());
