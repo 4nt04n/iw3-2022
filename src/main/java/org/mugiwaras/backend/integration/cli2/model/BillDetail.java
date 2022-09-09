@@ -11,9 +11,8 @@ import org.springframework.data.annotation.Id;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
+@Entity(name = "BillDetail")
 @Table(name = "bill_details")
-//@IdClass(BillDetailKey.class)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,16 +23,14 @@ public class BillDetail implements Serializable {
     private static final long serialVersionUID = -2732161062909843295L;
 
     @EmbeddedId
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BillDetailKey id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("idProductCli2")
     @JoinColumn(name = "id_product")
-//    @JsonIgnore
     private ProductCli2 product;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("idBill")
     @JoinColumn(name = "id_bill")
     @JsonIgnore

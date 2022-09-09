@@ -37,7 +37,7 @@ public class Bill implements Serializable {
     private boolean canceled = false;
 
 //    @OneToMany(mappedBy = "bill")
-    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "bill",fetch = FetchType.EAGER)
 //            @JoinTable
     List<BillDetail> detalle;
 
