@@ -18,12 +18,21 @@
 	<properties>
 		<java.version>11</java.version>
 		<tomcat.scope>runtime</tomcat.scope>
+<!--		<maven.compiler.source></maven.compiler.source>-->
+<!--		<maven.compiler.target></maven.compiler.target>-->
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>${tomcat.scope}</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-web-api</artifactId>
+			<version>8.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
@@ -87,6 +96,12 @@
 			<id>mysqlprod</id>
 			<properties>
 				<spring.profiles.active>mysqlprod</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>cli2</id>
+			<properties>
+				<spring.profiles.active>cli2</spring.profiles.active>
 			</properties>
 		</profile>
 		<!-- Perfiles de empaquetado -->
