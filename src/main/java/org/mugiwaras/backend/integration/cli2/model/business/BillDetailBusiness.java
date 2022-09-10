@@ -15,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 public class BillDetailBusiness implements IBillDetailBusiness {
 
-    @Autowired
+    @Autowired(required = false)
     private BillDetailRepository billDetailRepository;
 
     @Override

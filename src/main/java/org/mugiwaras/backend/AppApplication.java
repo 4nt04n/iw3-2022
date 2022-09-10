@@ -1,5 +1,7 @@
 package org.mugiwaras.backend;
 
+import org.mugiwaras.backend.model.persistence.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,10 +22,13 @@ public class AppApplication extends SpringBootServletInitializer  implements Com
 	@Value("${spring.profiles.active}")
 	private String profile;
 
+	@Autowired
+	private ProductRepository productDAO;
 	@Override
 	public void run(String... args) throws Exception {
 		log.info("Perfil Activo: {}",profile);
-		
+
+//		productDAO.findAll();
 	}
 
 }

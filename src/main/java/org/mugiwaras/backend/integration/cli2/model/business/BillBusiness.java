@@ -18,10 +18,10 @@ import java.util.Optional;
 @Slf4j
 public class BillBusiness implements IBillBusiness {
 
-    @Autowired
+    @Autowired(required = false)
     private BillRepository billRepository;
 
-    @Autowired
+    @Autowired(required = false)
     private BillDetailRepository billDetailRepository;
 
     @Override

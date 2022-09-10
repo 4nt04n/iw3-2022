@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class ProductCli2Business implements IProductCli2Business {
 
-    @Autowired
+    @Autowired(required = false)
     private ProductCli2Repository productCli2DAO;
 
     @Override

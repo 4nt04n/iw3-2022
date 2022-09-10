@@ -9,12 +9,13 @@ import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.util.IStandartResponseBusiness;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Profile({"cli2", "mysqldev"})
 @RestController
 @RequestMapping(Constants.URL_INTEGRATION_CLI2)
 public class ProductCli2RestController extends BaseRestController {
