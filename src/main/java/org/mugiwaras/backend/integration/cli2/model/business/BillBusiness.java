@@ -2,14 +2,11 @@ package org.mugiwaras.backend.integration.cli2.model.business;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
-import org.mugiwaras.backend.integration.cli2.model.BillDetail;
 import org.mugiwaras.backend.integration.cli2.model.persistence.BillDetailRepository;
 import org.mugiwaras.backend.integration.cli2.model.persistence.BillRepository;
-import org.mugiwaras.backend.model.Product;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.model.business.NotFoundException;
-import org.mugiwaras.backend.model.persistence.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,7 +103,7 @@ public class BillBusiness implements IBillBusiness {
         }
         try {
             load(bill.getNumber());
-            throw FoundException.builder().message("Se encontró la factura '" + bill.getNumber() + "'").build();
+            throw FoundException.builder().message("Se encontró la factura numero'" + bill.getNumber() + "'").build();
         } catch (NotFoundException e) {
         }
 
@@ -119,21 +116,6 @@ public class BillBusiness implements IBillBusiness {
 
     }
 
-//    @Override
-//    public BillDetail addDetail(BillDetail billDetail) throws BusinessException, NotFoundException {
-//        try {
-//            load(billDetail.getBill().getIdBill());
-//        } catch (NotFoundException e) {
-//            throw NotFoundException.builder().ex(e).build();
-//        }
-//        try {
-//            return billDetailRepository.save(billDetail);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//            throw BusinessException.builder().ex(e).build();
-//        }
-//
-//    }
 
     @Override
     public Bill update(Bill bill) throws NotFoundException, BusinessException {
@@ -151,8 +133,9 @@ public class BillBusiness implements IBillBusiness {
         return null;
     }
 
+    @Override
     public void delete(long id) throws NotFoundException, BusinessException {
-        load(id);
+        this.load(id);
         try {
             billRepository.deleteById(id);
         } catch (Exception e) {

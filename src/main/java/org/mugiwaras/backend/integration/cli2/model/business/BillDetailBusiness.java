@@ -2,13 +2,9 @@ package org.mugiwaras.backend.integration.cli2.model.business;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.mugiwaras.backend.integration.cli2.model.Bill;
 import org.mugiwaras.backend.integration.cli2.model.BillDetail;
 import org.mugiwaras.backend.integration.cli2.model.BillDetailKey;
 import org.mugiwaras.backend.integration.cli2.model.persistence.BillDetailRepository;
-import org.mugiwaras.backend.model.business.BusinessException;
-import org.mugiwaras.backend.model.business.FoundException;
-import org.mugiwaras.backend.model.business.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class BillDetailBusiness implements IBillDetailBusiness{
+public class BillDetailBusiness implements IBillDetailBusiness {
 
     @Autowired
     private BillDetailRepository billDetailRepository;

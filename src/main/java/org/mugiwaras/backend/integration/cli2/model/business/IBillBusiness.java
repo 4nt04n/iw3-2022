@@ -21,8 +21,6 @@ public interface IBillBusiness {
 
     public Bill add(Bill bill) throws FoundException, BusinessException;
 
-//    public BillDetail addDetail(BillDetail bill) throws FoundException, BusinessException, NotFoundException;
-
     public Bill update(Bill bill) throws NotFoundException, BusinessException;
 
     public Bill disable(long number) throws NotFoundException, BusinessException;

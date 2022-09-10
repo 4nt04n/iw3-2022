@@ -1,10 +1,9 @@
 package org.mugiwaras.backend.integration.cli2.controllers;
+
 import org.mugiwaras.backend.controllers.BaseRestController;
 import org.mugiwaras.backend.controllers.Constants;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
 import org.mugiwaras.backend.integration.cli2.model.BillDetail;
-import org.mugiwaras.backend.integration.cli2.model.BillDetailKey;
-import org.mugiwaras.backend.integration.cli2.model.business.BillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
 import org.mugiwaras.backend.model.business.BusinessException;
@@ -27,7 +26,7 @@ public class BillRestController extends BaseRestController {
     @Autowired
     private IBillBusiness billBusiness;
 
-    @Autowired()
+    @Autowired
     private IBillDetailBusiness billDetailBusiness;
 
 
@@ -41,7 +40,7 @@ public class BillRestController extends BaseRestController {
         }
     }
 
-    @GetMapping(value = "/no/anuladas", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/canceled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> listNoNull() {
         try {
             return new ResponseEntity<>(billBusiness.listNoNull(), HttpStatus.OK);
@@ -51,12 +50,11 @@ public class BillRestController extends BaseRestController {
     }
 
     @GetMapping(value = "/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loadByCode(@PathVariable("number") Long number) {
+    public ResponseEntity<?> loadByNumber(@PathVariable("number") Long number) {
         try {
             return new ResponseEntity<>(billBusiness.loadByNumber(number), HttpStatus.OK);
         } catch (BusinessException e) {
-            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         }
@@ -66,9 +64,9 @@ public class BillRestController extends BaseRestController {
     public ResponseEntity<?> cancel(@PathVariable("number") Long number) throws BusinessException, NotFoundException {
         try {
             return new ResponseEntity<>(billBusiness.setCancel(billBusiness.loadByNumber(number)), HttpStatus.OK);
-        } catch (BusinessException e){
-            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR,e,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (NotFoundException e){
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
@@ -77,17 +75,13 @@ public class BillRestController extends BaseRestController {
     @PostMapping(value = "")
     public ResponseEntity<?> add(@RequestBody Bill bill) {
         try {
+            //TODO: esta logica no deberia estar acá, si no en capa business. salu2
+            Bill auxBill = Bill.builder().broadcastDate(bill.getBroadcastDate()).expirationDate(bill.getExpirationDate()).number(bill.getNumber()).canceled(bill.isCanceled()).build();
 
-           Bill auxBill= new Bill();
-           auxBill.setBroadcastDate(bill.getBroadcastDate());
-           auxBill.setExpirationDate(bill.getExpirationDate());
-           auxBill.setNumber(bill.getNumber());
-           auxBill.setCanceled(bill.isCanceled());
             Bill response = billBusiness.add(auxBill);
-            for (BillDetail item: bill.getDetalle()
-                 ) {
+            for (BillDetail item : bill.getDetalle()) {
                 item.setBill(response);
-            billDetailBusiness.add(item,response.getIdBill(),item.getProduct().getId());
+                billDetailBusiness.add(item, response.getIdBill(), item.getProduct().getId());
             }
 
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -96,8 +90,7 @@ public class BillRestController extends BaseRestController {
         } catch (FoundException e) {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (BusinessException e) {
-            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -3,11 +3,9 @@ package org.mugiwaras.backend.integration.cli2.model.business;
 import lombok.extern.slf4j.Slf4j;
 import org.mugiwaras.backend.integration.cli2.model.ProductCli2;
 import org.mugiwaras.backend.integration.cli2.model.persistence.ProductCli2Repository;
-import org.mugiwaras.backend.model.Product;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.model.business.NotFoundException;
-import org.mugiwaras.backend.model.persistence.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +24,11 @@ public class ProductCli2Business implements IProductCli2Business {
         Optional<ProductCli2> r;
         try {
             r = productCli2DAO.findById(idProduct);
-//            r = productCli2DAO.findOneById(id);
-//            r=productCli2DAO.findOneByCodCli2(codCli2);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw BusinessException.builder().ex(e).build();
         }
-        if(r.isEmpty()) {
+        if (r.isEmpty()) {
             throw NotFoundException.builder().message("No se encuentra el Producto id=" + idProduct).build();
         }
 

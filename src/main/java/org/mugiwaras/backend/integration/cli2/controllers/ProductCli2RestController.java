@@ -7,8 +7,6 @@ import org.mugiwaras.backend.integration.cli2.model.business.IProductCli2Busines
 import org.mugiwaras.backend.model.Product;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
-import org.mugiwaras.backend.model.business.IProductBusiness;
-import org.mugiwaras.backend.model.business.NotFoundException;
 import org.mugiwaras.backend.util.IStandartResponseBusiness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

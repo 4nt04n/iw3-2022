@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.mugiwaras.backend.model.Product;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name="cli2_products")
@@ -20,7 +19,7 @@ public class ProductCli2 extends Product {
 
     private static final long serialVersionUID = -3227781224998922643L;
 
-    @Column(nullable = false,unique = false)
+    @Column(nullable = false)
     private String codCli2;
 
 }
