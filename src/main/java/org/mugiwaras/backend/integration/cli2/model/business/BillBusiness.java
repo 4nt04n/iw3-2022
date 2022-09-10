@@ -88,6 +88,15 @@ public class BillBusiness implements IBillBusiness {
         }
     }
 
+    public Bill setCancel(Bill bill) throws BusinessException, NotFoundException {
+        try {
+            bill.setCanceled(true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return update(bill);
+    }
+
     @Override
     public Bill add(Bill bill) throws FoundException, BusinessException {
         try {

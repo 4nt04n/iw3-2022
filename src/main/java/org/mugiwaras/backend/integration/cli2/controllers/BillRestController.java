@@ -4,6 +4,7 @@ import org.mugiwaras.backend.controllers.Constants;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
 import org.mugiwaras.backend.integration.cli2.model.BillDetail;
 import org.mugiwaras.backend.integration.cli2.model.BillDetailKey;
+import org.mugiwaras.backend.integration.cli2.model.business.BillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
 import org.mugiwaras.backend.model.business.BusinessException;
@@ -60,6 +61,18 @@ public class BillRestController extends BaseRestController {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping(value = "cancel/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> cancel(@PathVariable("number") Long number) throws BusinessException, NotFoundException {
+        try {
+            return new ResponseEntity<>(billBusiness.setCancel(billBusiness.loadByNumber(number)), HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR,e,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e){
+            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @PostMapping(value = "")
     public ResponseEntity<?> add(@RequestBody Bill bill) {
