@@ -6,6 +6,7 @@ import org.mugiwaras.backend.integration.cli2.model.Bill;
 import org.mugiwaras.backend.integration.cli2.model.BillDetail;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
+import org.mugiwaras.backend.model.Product;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.model.business.NotFoundException;
@@ -77,12 +78,10 @@ public class BillRestController extends BaseRestController {
         try {
             //TODO: esta logica no deberia estar acá, si no en capa business. salu2
             Bill auxBill = Bill.builder().broadcastDate(bill.getBroadcastDate()).expirationDate(bill.getExpirationDate()).number(bill.getNumber()).canceled(bill.isCanceled()).build();
-
+            //TODO: Se crea una cabecera de bill
             Bill response = billBusiness.add(auxBill);
-            for (BillDetail item : bill.getDetalle()) {
-                item.setBill(response);
-                billDetailBusiness.add(item, response.getIdBill(), item.getProduct().getId());
-            }
+            //Se agrega todos los detalles
+            billDetailBusiness.add(bill.getDetalle(),response);
 
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getIdBill());
@@ -91,6 +90,21 @@ public class BillRestController extends BaseRestController {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (BusinessException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping(value = "")
+    public ResponseEntity<?> update(@RequestBody Bill bill) {
+        try {
+            Bill response = billBusiness.update(bill);
+            billDetailBusiness.deleteAllByIdBill(bill.getIdBill());
+            billDetailBusiness.add(bill.getDetalle(),response);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
