@@ -35,17 +35,17 @@ public class ProductCli2RestController extends BaseRestController {
         }
     }
 
-    @GetMapping(value = "/{codCli2}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loadByCode(@PathVariable("codCli2") String codCli2) {
-        try {
-            return new ResponseEntity<>(productBusiness.load(codCli2), HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
-        }
-    }
+//    @GetMapping(value = "/{codCli2}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> loadByCode(@PathVariable("codCli2") String codCli2) {
+//        try {
+//            return new ResponseEntity<>(productBusiness.load(codCli2), HttpStatus.OK);
+//        } catch (BusinessException e) {
+//            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
+//                    HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (NotFoundException e) {
+//            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PostMapping(value = "")
     public ResponseEntity<?> add(@RequestBody ProductCli2 product) {

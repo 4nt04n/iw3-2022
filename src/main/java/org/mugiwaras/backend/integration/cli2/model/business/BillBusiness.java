@@ -13,6 +13,7 @@ import org.mugiwaras.backend.model.persistence.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,7 +72,20 @@ public class BillBusiness implements IBillBusiness {
 
     @Override
     public List<Bill> listNoNull() throws BusinessException {
-        return null;
+        try {
+            List<Bill> billList = new ArrayList<>();
+            for (Bill item : this.list()) {
+                if (!item.isCanceled()) {
+                    billList.add(item);
+                }
+            }
+
+            return billList;
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw BusinessException.builder().ex(e).build();
+        }
     }
 
     @Override

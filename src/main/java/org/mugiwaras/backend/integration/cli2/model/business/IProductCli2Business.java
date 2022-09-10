@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IProductCli2Business {
 
-     ProductCli2 load(String codCli2) throws NotFoundException, BusinessException;
+     ProductCli2 load(Long idProduct) throws NotFoundException, BusinessException;
      List<ProductCli2> list() throws BusinessException;
      ProductCli2 add(ProductCli2 product) throws FoundException, BusinessException;
 

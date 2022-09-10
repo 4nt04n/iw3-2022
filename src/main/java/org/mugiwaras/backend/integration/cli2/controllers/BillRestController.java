@@ -33,7 +33,17 @@ public class BillRestController extends BaseRestController {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> list() {
         try {
+
             return new ResponseEntity<>(billBusiness.list(), HttpStatus.OK);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/no/anuladas", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> listNoNull() {
+        try {
+            return new ResponseEntity<>(billBusiness.listNoNull(), HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -42,7 +52,7 @@ public class BillRestController extends BaseRestController {
     @GetMapping(value = "/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loadByCode(@PathVariable("number") Long number) {
         try {
-            return new ResponseEntity<>(billBusiness.load(number), HttpStatus.OK);
+            return new ResponseEntity<>(billBusiness.loadByNumber(number), HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -59,6 +69,7 @@ public class BillRestController extends BaseRestController {
            auxBill.setBroadcastDate(bill.getBroadcastDate());
            auxBill.setExpirationDate(bill.getExpirationDate());
            auxBill.setNumber(bill.getNumber());
+           auxBill.setCanceled(bill.isCanceled());
             Bill response = billBusiness.add(auxBill);
             for (BillDetail item: bill.getDetalle()
                  ) {
@@ -66,8 +77,6 @@ public class BillRestController extends BaseRestController {
             billDetailBusiness.add(item,response.getIdBill(),item.getProduct().getId());
             }
 
-
-            //TODO: marcos ver esto!!
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getIdBill());
             return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);

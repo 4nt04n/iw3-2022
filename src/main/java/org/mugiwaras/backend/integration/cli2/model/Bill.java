@@ -33,8 +33,9 @@ public class Bill implements Serializable {
     @Column
     private OffsetDateTime expirationDate;
 
-    @Column(columnDefinition = "tinyint default 0")
-    private boolean canceled = false;
+//    @Column(columnDefinition = "tinyint")
+    @Column
+    private boolean canceled;
 
 //    @OneToMany(mappedBy = "bill")
     @OneToMany(mappedBy = "bill",fetch = FetchType.EAGER)

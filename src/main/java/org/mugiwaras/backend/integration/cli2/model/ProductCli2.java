@@ -20,7 +20,7 @@ public class ProductCli2 extends Product {
 
     private static final long serialVersionUID = -3227781224998922643L;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false,unique = false)
     private String codCli2;
 
 }

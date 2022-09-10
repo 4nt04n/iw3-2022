@@ -22,16 +22,18 @@ public class ProductCli2Business implements IProductCli2Business {
     private ProductCli2Repository productCli2DAO;
 
     @Override
-    public ProductCli2 load(String codCli2) throws NotFoundException, BusinessException {
+    public ProductCli2 load(Long idProduct) throws NotFoundException, BusinessException {
         Optional<ProductCli2> r;
         try {
-            r=productCli2DAO.findOneByCodCli2(codCli2);
+            r = productCli2DAO.findById(idProduct);
+//            r = productCli2DAO.findOneById(id);
+//            r=productCli2DAO.findOneByCodCli2(codCli2);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw BusinessException.builder().ex(e).build();
         }
         if(r.isEmpty()) {
-            throw NotFoundException.builder().message("No se encuentra el Producto id=" + codCli2).build();
+            throw NotFoundException.builder().message("No se encuentra el Producto id=" + idProduct).build();
         }
 
         return r.get();
@@ -50,16 +52,10 @@ public class ProductCli2Business implements IProductCli2Business {
     @Override
     public ProductCli2 add(ProductCli2 product) throws FoundException, BusinessException {
         try {
-            load(product.getCodCli2());
+            load(product.getId());
             throw FoundException.builder().message("Se encontró el Producto id=" + product.getId()).build();
         } catch (NotFoundException e) {
         }
-        try {
-            load(product.getProduct());
-            throw FoundException.builder().message("Se encontró el Producto '" + product.getProduct() +"'").build();
-        } catch (NotFoundException e) {
-        }
-
         try {
             return productCli2DAO.save(product);
         } catch (Exception e) {
