@@ -2,6 +2,7 @@ package org.mugiwaras.backend.integration.cli2.model.business;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
+import org.mugiwaras.backend.integration.cli2.model.IBillViewV2;
 import org.mugiwaras.backend.integration.cli2.model.persistence.BillDetailRepository;
 import org.mugiwaras.backend.integration.cli2.model.persistence.BillRepository;
 import org.mugiwaras.backend.model.business.BusinessException;
@@ -34,7 +35,7 @@ public class BillBusiness implements IBillBusiness {
             throw BusinessException.builder().ex(e).build();
         }
         if (r.isEmpty()) {
-            throw NotFoundException.builder().message("No se encuentra el Producto id=" + id).build();
+            throw NotFoundException.builder().message("No se encuentra la factura id=" + id).build();
         }
 
         return r.get();
@@ -42,8 +43,23 @@ public class BillBusiness implements IBillBusiness {
 
 
     @Override
-    public Bill loadByNumber(Long number) throws NotFoundException, BusinessException {
+    public Bill loadByNumberV1(Long number) throws NotFoundException, BusinessException {
         Optional<Bill> r;
+        try {
+            r = billRepository.findOneByNumberV1(number);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw BusinessException.builder().ex(e).build();
+        }
+        if (r.isEmpty()) {
+            throw NotFoundException.builder().message("No se encuentra la factura numero '" + number + "'").build();
+        }
+        return r.get();
+    }
+
+    @Override
+    public IBillViewV2 loadByNumberV2(Long number) throws NotFoundException, BusinessException {
+        Optional<IBillViewV2> r;
         try {
             r = billRepository.findOneByNumber(number);
         } catch (Exception e) {
@@ -92,6 +108,15 @@ public class BillBusiness implements IBillBusiness {
             throw new RuntimeException(e);
         }
         return update(bill);
+    }
+
+    public Integer   setCancelNative(Long id) throws NotFoundException, BusinessException {
+        load(id);
+        try {
+            return billRepository.updateCancelById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

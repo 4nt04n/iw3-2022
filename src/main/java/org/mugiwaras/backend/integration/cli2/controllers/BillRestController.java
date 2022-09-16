@@ -1,15 +1,20 @@
 package org.mugiwaras.backend.integration.cli2.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.mugiwaras.backend.controllers.BaseRestController;
 import org.mugiwaras.backend.controllers.Constants;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
 import org.mugiwaras.backend.integration.cli2.model.BillDetail;
+import org.mugiwaras.backend.integration.cli2.model.BillSlimV1JsonSerializer;
+import org.mugiwaras.backend.integration.cli2.model.BillSlimV2JsonSerializer;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.model.business.NotFoundException;
 import org.mugiwaras.backend.util.IStandartResponseBusiness;
+import org.mugiwaras.backend.util.JsonUtiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,11 +36,21 @@ public class BillRestController extends BaseRestController {
 
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> list() {
-        try {
+    public ResponseEntity<?> list(@RequestParam(name = "slim", required = false, defaultValue = "v0") String slimVersion) {
 
-            return new ResponseEntity<>(billBusiness.list(), HttpStatus.OK);
-        } catch (BusinessException e) {
+        try {
+            StdSerializer<Bill> ser = null;
+            if (slimVersion.equalsIgnoreCase("v1")) {
+                ser = new BillSlimV1JsonSerializer(Bill.class, false);
+            } else if (slimVersion.equalsIgnoreCase("v2")) {
+                ser = new BillSlimV2JsonSerializer(Bill.class, false);
+            } else {
+                return new ResponseEntity<>(billBusiness.list(), HttpStatus.OK); //vO
+            }
+            String result = JsonUtiles.getObjectMapper(Bill.class, ser, null).writeValueAsString(billBusiness.list());
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (BusinessException | JsonProcessingException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -50,9 +65,33 @@ public class BillRestController extends BaseRestController {
     }
 
     @GetMapping(value = "/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loadByNumber(@PathVariable("number") Long number) {
+    public ResponseEntity<?> loadByNumber(@RequestParam(name = "slim", required = false, defaultValue = "v0") String slimVersion, @PathVariable("number") Long number) {
         try {
-            return new ResponseEntity<>(billBusiness.loadByNumber(number), HttpStatus.OK);
+            StdSerializer<Bill> ser = null;
+            if (slimVersion.equalsIgnoreCase("v1")) {
+                ser = new BillSlimV1JsonSerializer(Bill.class, false);
+                String result = JsonUtiles.getObjectMapper(Bill.class, ser, null).writeValueAsString(billBusiness.loadByNumberV1(number));
+                return new ResponseEntity<>(result, HttpStatus.OK);//return v1
+
+            } else if (slimVersion.equalsIgnoreCase("v2")) {
+                ser = new BillSlimV2JsonSerializer(Bill.class, false);
+                String result = JsonUtiles.getObjectMapper(Bill.class, ser, null).writeValueAsString(billBusiness.loadByNumberV2(number));
+                return new ResponseEntity<>(result, HttpStatus.OK);//return v2
+            } else {
+                return new ResponseEntity<>(billBusiness.loadByNumberV1(number), HttpStatus.OK); //return v0
+            }
+
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException | JsonProcessingException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "cancel/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> cancel(@PathVariable("number") Long number) throws BusinessException, NotFoundException {
+        try {
+            return new ResponseEntity<>(billBusiness.setCancel(billBusiness.loadByNumberV1(number)), HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NotFoundException e) {
@@ -60,14 +99,21 @@ public class BillRestController extends BaseRestController {
         }
     }
 
-    @GetMapping(value = "cancel/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> cancel(@PathVariable("number") Long number) throws BusinessException, NotFoundException {
+    @PutMapping(value = "cancel/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> cancelById(@PathVariable("id") Long id) throws BusinessException, NotFoundException {
         try {
-            return new ResponseEntity<>(billBusiness.setCancel(billBusiness.loadByNumber(number)), HttpStatus.OK);
+        return new ResponseEntity<>(billBusiness.setCancelNative(id), HttpStatus.OK);}
+    catch (NotFoundException e) {
+        return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+    }
+
+    @GetMapping(value = "/list/with/product/{idproduct}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> billsIdByProduct(@PathVariable("idproduct") Long idproduct) throws BusinessException, NotFoundException {
+        try {
+            return new ResponseEntity<>(billDetailBusiness.idBillByIdProduct(idproduct), HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 

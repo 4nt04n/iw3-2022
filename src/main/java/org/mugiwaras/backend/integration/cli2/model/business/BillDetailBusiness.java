@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mugiwaras.backend.integration.cli2.model.BillDetail;
 import org.mugiwaras.backend.integration.cli2.model.BillDetailKey;
 import org.mugiwaras.backend.integration.cli2.model.persistence.BillDetailRepository;
+import org.mugiwaras.backend.model.business.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,16 @@ public class BillDetailBusiness implements IBillDetailBusiness {
         key.setIdProductCli2(idProduct);
         billDetail.setId(key);
         billDetailRepository.save(billDetail);
+    }
+
+    @Override
+    public List<Long> idBillByIdProduct(Long idProduct) throws BusinessException {
+        try{
+               List<Long> result = billDetailRepository.findIdBillWithProduct(idProduct);
+               return result;
+        } catch (Exception e){
+            throw BusinessException.builder().ex(e).build();
+        }
     }
 
 
