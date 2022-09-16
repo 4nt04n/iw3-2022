@@ -14,6 +14,8 @@ public interface IBillDetailBusiness {
     public List<BillDetail> list();
     void add(BillDetail billDetail, Long idBill, Long idProduct);
 
+    public List<Long> idBillByIdProduct(Long idProduct) throws BusinessException;
+
     void add(List<BillDetail> detalles, Bill bill);
 
     public void deleteAllByIdBill(long idBill) throws BusinessException;
