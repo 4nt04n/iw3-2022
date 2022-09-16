@@ -49,6 +49,8 @@ public class BillDetailBusiness implements IBillDetailBusiness {
         billDetail.setId(key);
         billDetailRepository.save(billDetail);
     }
+
+
     @Override
     public void add(List<BillDetail> detalles, Bill bill){
         for (BillDetail item : detalles) {
@@ -70,6 +72,7 @@ public class BillDetailBusiness implements IBillDetailBusiness {
                 log.error(e.getMessage(), e);
                 throw BusinessException.builder().ex(e).build();
             }
+    }
 
     @Override
     public List<Long> idBillByIdProduct(Long idProduct) throws BusinessException {
@@ -82,7 +85,6 @@ public class BillDetailBusiness implements IBillDetailBusiness {
     }
 
 
-        }
 
-    }
+}
 

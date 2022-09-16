@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface BillDetailRepository  extends JpaRepository<BillDetail, Long> {
 
+    List<BillDetail> findAllById_IdBill(long idBill);
     @Query(value = "SELECT id_bill FROM bill_details where id_product=? ", nativeQuery = true)
     List<Long> findIdBillWithProduct(Long idProduct);
 }
