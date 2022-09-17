@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.mugiwaras.backend.controllers.BaseRestController;
 import org.mugiwaras.backend.controllers.Constants;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
-import org.mugiwaras.backend.integration.cli2.model.BillDetail;
 import org.mugiwaras.backend.integration.cli2.model.BillSlimV1JsonSerializer;
 import org.mugiwaras.backend.integration.cli2.model.BillSlimV2JsonSerializer;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
-import org.mugiwaras.backend.model.Product;
 import org.mugiwaras.backend.model.business.BusinessException;
 import org.mugiwaras.backend.model.business.FoundException;
 import org.mugiwaras.backend.model.business.NotFoundException;
@@ -103,10 +101,11 @@ public class BillRestController extends BaseRestController {
     @PutMapping(value = "cancel/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> cancelById(@PathVariable("id") Long id) throws BusinessException, NotFoundException {
         try {
-        return new ResponseEntity<>(billBusiness.setCancelNative(id), HttpStatus.OK);}
-    catch (NotFoundException e) {
-        return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
-    }
+            billBusiness.setCancelNative(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(value = "/list/with/product/{idproduct}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -124,13 +123,13 @@ public class BillRestController extends BaseRestController {
         try {
             //TODO: esta logica no deberia estar acá, si no en capa business. salu2
             Bill auxBill = Bill.builder().broadcastDate(bill.getBroadcastDate()).expirationDate(bill.getExpirationDate()).number(bill.getNumber()).canceled(bill.isCanceled()).build();
-            //TODO: Se crea una cabecera de bill
+            // Se crea una cabecera de bill
             Bill response = billBusiness.add(auxBill);
-            //Se agrega todos los detalles
-            billDetailBusiness.add(bill.getDetalle(),response);
+            // Se agrega todos los detalles
+            billDetailBusiness.add(bill.getDetalle(), response);
 
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getIdBill());
+            responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getNumber());
             return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
         } catch (FoundException e) {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
@@ -138,12 +137,13 @@ public class BillRestController extends BaseRestController {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PutMapping(value = "")
     public ResponseEntity<?> update(@RequestBody Bill bill) {
         try {
             Bill response = billBusiness.update(bill);
             billDetailBusiness.deleteAllByIdBill(bill.getIdBill());
-            billDetailBusiness.add(bill.getDetalle(),response);
+            billDetailBusiness.add(bill.getDetalle(), response);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (BusinessException e) {

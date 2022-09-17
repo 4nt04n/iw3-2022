@@ -110,10 +110,10 @@ public class BillBusiness implements IBillBusiness {
         return update(bill);
     }
 
-    public Integer   setCancelNative(Long id) throws NotFoundException, BusinessException {
+    public void setCancelNative(Long id) throws NotFoundException, BusinessException {
         load(id);
         try {
-            return billRepository.updateCancelById(id);
+            billRepository.updateCancelById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
