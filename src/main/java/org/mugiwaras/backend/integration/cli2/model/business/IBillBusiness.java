@@ -18,6 +18,8 @@ public interface IBillBusiness {
 
     public List<Bill> list() throws BusinessException;
 
+    public List<IBillViewV2> listV2() throws BusinessException;
+
     public List<Bill> listNoNull() throws BusinessException;
 
     public Bill add(Bill bill) throws FoundException, BusinessException;

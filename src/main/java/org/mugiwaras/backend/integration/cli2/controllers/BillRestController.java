@@ -40,15 +40,22 @@ public class BillRestController extends BaseRestController {
         try {
             StdSerializer<Bill> ser = null;
             if (slimVersion.equalsIgnoreCase("v1")) {
-                ser = new BillSlimV1JsonSerializer(Bill.class, false);
-            } else if (slimVersion.equalsIgnoreCase("v2")) {
-                ser = new BillSlimV2JsonSerializer(Bill.class, false);
-            } else {
-                return new ResponseEntity<>(billBusiness.list(), HttpStatus.OK); //vO
-            }
-            String result = JsonUtiles.getObjectMapper(Bill.class, ser, null).writeValueAsString(billBusiness.list());
 
-            return new ResponseEntity<>(result, HttpStatus.OK);
+                ser = new BillSlimV1JsonSerializer(Bill.class, false);
+                String result = JsonUtiles.getObjectMapper(Bill.class, ser, null).writeValueAsString(billBusiness.list());
+                return new ResponseEntity<>(result, HttpStatus.OK); // return v1
+
+            } else if (slimVersion.equalsIgnoreCase("v2")) {
+
+                ser = new BillSlimV2JsonSerializer(Bill.class, false);
+                String result = JsonUtiles.getObjectMapper(Bill.class, ser, null).writeValueAsString(billBusiness.listV2());
+                return new ResponseEntity<>(result, HttpStatus.OK); // return v2
+
+            } else {
+
+                return new ResponseEntity<>(billBusiness.list(), HttpStatus.OK); // return vO
+
+            }
         } catch (BusinessException | JsonProcessingException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }

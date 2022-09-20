@@ -25,6 +25,9 @@ public class BillBusiness implements IBillBusiness {
     @Autowired(required = false)
     private BillDetailRepository billDetailRepository;
 
+//    @Autowired(required = false)
+//    private BillViewRepository billViewRepository;
+
     @Override
     public Bill load(long id) throws NotFoundException, BusinessException {
         Optional<Bill> r;
@@ -83,6 +86,17 @@ public class BillBusiness implements IBillBusiness {
 
     }
 
+    @Override
+    public List<IBillViewV2> listV2() throws BusinessException {
+        try {
+            return billRepository.findAllV2();
+//            return billViewRepository.findAll();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw BusinessException.builder().ex(e).build();
+        }
+
+    }
     @Override
     public List<Bill> listNoNull() throws BusinessException {
         try {
