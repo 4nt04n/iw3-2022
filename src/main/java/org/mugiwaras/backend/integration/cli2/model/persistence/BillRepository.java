@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,7 +19,7 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE bills SET canceled=1 WHERE id_bill=?",nativeQuery = true)
-   Integer updateCancelById(Long id);
+    @Query(value = "UPDATE bills SET canceled=1 WHERE id_bill=?", nativeQuery = true)
+    void updateCancelById(Long id);
 
 }
