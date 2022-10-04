@@ -28,7 +28,6 @@ public class Audit implements Serializable {
     @Column
     private String user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_bill")
-    private Bill bill;
+    @Column
+    private Long idOriginal;
 }

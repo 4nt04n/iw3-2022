@@ -16,7 +16,7 @@ public class AuditJsonSerializer extends StdSerializer<Audit> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("fechaOperacion", audit.getFecha().toString());
         jsonGenerator.writeStringField("tipoOperacion", audit.getOperacion());
-        jsonGenerator.writeNumberField("idOriginal", audit.getBill().getIdBill());
+        jsonGenerator.writeNumberField("idOriginal", audit.getIdOriginal());
         jsonGenerator.writeStringField("username", audit.getUser());
         jsonGenerator.writeEndObject();
 

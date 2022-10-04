@@ -139,7 +139,7 @@ public class BillRestController extends BaseRestController {
             responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getNumber());
 
             //****************** inicio auditoria ***************
-            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("alta").user(getUserLogged().getUsername()).bill(auxBill).build();
+            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("alta").user(getUserLogged().getUsername()).idOriginal(auxBill.getIdBill()).build();
             auditBusiness.add(audit);
             //****************** fin auditoria ***************
 
@@ -159,7 +159,7 @@ public class BillRestController extends BaseRestController {
             billDetailBusiness.add(bill.getDetalle(), response);
 
             //****************** inicio auditoria ***************
-            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("modificacion").user(getUserLogged().getUsername()).bill(bill).build();
+            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("modificacion").user(getUserLogged().getUsername()).idOriginal(bill.getIdBill()).build();
             auditBusiness.add(audit);
             //****************** fin auditoria ***************
 
@@ -174,24 +174,24 @@ public class BillRestController extends BaseRestController {
         }
     }
 
-//    @DeleteMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> delete(@PathVariable("id") Long id) throws BusinessException{
-//        try {
-//
-//            //****************** inicio auditoria ***************
-//            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("baja").user(getUserLogged().getUsername())
-////                    .bill(bill)
-//                    .build();
-//            auditBusiness.add(audit);
-//            //****************** fin auditoria ***************
-//            billBusiness.delete(id);
-//
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        } catch (NotFoundException e) {
-//            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
-//        } catch (FoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @DeleteMapping(value = "/number/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable("number") Long number) throws BusinessException{
+        try {
+            Bill bill = billBusiness.loadByNumberV1(number);
+            //****************** inicio auditoria ***************
+            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("baja").user(getUserLogged().getUsername()).idOriginal(bill.getIdBill()).build();
+            auditBusiness.add(audit);
+            //****************** fin auditoria ***************
+
+            billDetailBusiness.deleteAllByIdBill(bill.getIdBill());
+            billBusiness.delete(bill.getIdBill());
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (FoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
