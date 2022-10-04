@@ -30,7 +30,9 @@ public class AuditRestController extends BaseRestController {
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> list() {
-
+        if(!getUserLogged().isInRole("ROLE_VIEW")){
+            return new ResponseEntity<String>("No tenés rol view", HttpStatus.OK);
+        }
         try {
             StdSerializer<Audit> serializer = new AuditJsonSerializer(Audit.class, false);
             String result = JsonUtiles.getObjectMapper(Audit.class, serializer, null).writeValueAsString(auditBusiness.list(getUserLogged().getUsername()));
