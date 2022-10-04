@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.mugiwaras.backend.controllers.BaseRestController;
 import org.mugiwaras.backend.controllers.Constants;
+import org.mugiwaras.backend.integration.cli2.model.Audit;
 import org.mugiwaras.backend.integration.cli2.model.Bill;
 import org.mugiwaras.backend.integration.cli2.model.BillSlimV1JsonSerializer;
 import org.mugiwaras.backend.integration.cli2.model.BillSlimV2JsonSerializer;
+import org.mugiwaras.backend.integration.cli2.model.business.IAuditBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillBusiness;
 import org.mugiwaras.backend.integration.cli2.model.business.IBillDetailBusiness;
 import org.mugiwaras.backend.model.business.BusinessException;
@@ -21,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
+
 @RestController
 @RequestMapping(Constants.URL_INTEGRATION_CLI2_BILLS)
 public class BillRestController extends BaseRestController {
@@ -32,6 +36,9 @@ public class BillRestController extends BaseRestController {
 
     @Autowired
     private IBillDetailBusiness billDetailBusiness;
+
+    @Autowired
+    private IAuditBusiness auditBusiness;
 
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -130,6 +137,12 @@ public class BillRestController extends BaseRestController {
 
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("location", Constants.URL_INTEGRATION_CLI2_BILLS + "/" + response.getNumber());
+
+            //****************** inicio auditoria ***************
+            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("alta").user(getUserLogged().getUsername()).bill(auxBill).build();
+            auditBusiness.add(audit);
+            //****************** fin auditoria ***************
+
             return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
         } catch (FoundException e) {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
@@ -145,13 +158,40 @@ public class BillRestController extends BaseRestController {
             billDetailBusiness.deleteAllByIdBill(bill.getIdBill());
             billDetailBusiness.add(bill.getDetalle(), response);
 
+            //****************** inicio auditoria ***************
+            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("modificacion").user(getUserLogged().getUsername()).bill(bill).build();
+            auditBusiness.add(audit);
+            //****************** fin auditoria ***************
+
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (FoundException e) {
+            throw new RuntimeException(e);
         }
     }
+
+//    @DeleteMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> delete(@PathVariable("id") Long id) throws BusinessException{
+//        try {
+//
+//            //****************** inicio auditoria ***************
+//            Audit audit = Audit.builder().fecha(OffsetDateTime.now()).operacion("baja").user(getUserLogged().getUsername())
+////                    .bill(bill)
+//                    .build();
+//            auditBusiness.add(audit);
+//            //****************** fin auditoria ***************
+//            billBusiness.delete(id);
+//
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (NotFoundException e) {
+//            return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+//        } catch (FoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }

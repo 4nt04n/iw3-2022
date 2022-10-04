@@ -28,7 +28,7 @@ public interface IBillBusiness {
 
     public Bill setCancel(Bill bill) throws NotFoundException, BusinessException;
 
-    public void delete(long id) throws NotFoundException, BusinessException;
+    public void delete(Long id) throws NotFoundException, BusinessException;
 
     public void setCancelNative(Long id) throws NotFoundException, BusinessException;
 }
