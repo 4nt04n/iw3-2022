@@ -159,7 +159,7 @@ public class BillBusiness implements IBillBusiness {
     }
 
     @Override
-    public void delete(long id) throws NotFoundException, BusinessException {
+    public void delete(Long id) throws NotFoundException, BusinessException {
         this.load(id);
         try {
             billRepository.deleteById(id);
@@ -167,7 +167,5 @@ public class BillBusiness implements IBillBusiness {
             log.error(e.getMessage(), e);
             throw BusinessException.builder().ex(e).build();
         }
-
-
     }
 }
